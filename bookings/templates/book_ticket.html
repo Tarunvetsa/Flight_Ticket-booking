@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Ticket</title>
+</head>
+<body>
+    <h1>Book Ticket</h1>
+    <p>Your ticket for Flight {{ flight_number }} has been booked. Your ticket number is {{ booked_tickets }}.</p>
+    <a href="{% url 'flights' %}"><button>Back to Flights Page</button></a>
+</body>
+</html>

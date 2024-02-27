@@ -1,5 +1,6 @@
 from django import forms
-from .models import Flight
+from .models import Flight,User
+from django.contrib.auth.forms import UserCreationForm
 
 class FlightForm(forms.ModelForm):
     class Meta:
@@ -9,3 +10,8 @@ class FlightForm(forms.ModelForm):
             'departure_date': forms.DateInput(attrs={'type': 'date'}),
             'departure_time': forms.TimeInput(attrs={'type': 'time'}),
         }
+        
+class MyUserCreationForm(UserCreationForm):
+    class Meta:
+        model=User
+        fields=['username','email','password1','password2','user_type']
