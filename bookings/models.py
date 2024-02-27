@@ -1,35 +1,7 @@
 from django.db import models
 import uuid
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-
-# class CustomUserManager(BaseUserManager):
-#     def create_superuser(self, email, password, **extra_fields):
-#         extra_fields.setdefault('is_staff', True)
-#         extra_fields.setdefault('is_superuser', True)
-
-#         if extra_fields.get('is_staff') is not True:
-#             raise ValueError('Superuser must have is_staff=True.')
-#         if extra_fields.get('is_superuser') is not True:
-#             raise ValueError('Superuser must have is_superuser=True.')
-
-#         return self.create_user(email, password, **extra_fields)
-
-
-# class User(AbstractUser):
-#     USER = 'user'
-#     ADMIN = 'admin'
-#     USER_TYPE_CHOICES = [
-#         (USER, 'User'),
-#         (ADMIN, 'Admin'),
-#     ]
-    
-#     name=models.CharField(max_length=200,null=True)
-#     email=models.EmailField(unique=True, null=True)
-#     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default=USER)
-    
-#     USERNAME_FIELD='email'
-#     REQUIRED_FIELDS=[]
-
+from datetime import datetime
 class User(AbstractUser):
     USER = 'user'
     ADMIN = 'admin'
@@ -59,3 +31,12 @@ class Flight(models.Model):
     
     def __str__(self):
         return str(self.flight_number)
+        
+class Booking(models.Model):
+    booking_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    flight = models.ForeignKey(Flight, on_delete=models.PROTECT)
+    booking_time = models.DateTimeField(default=datetime.now)
+
+    def __str__(self):
+        return str(self.booking_id)

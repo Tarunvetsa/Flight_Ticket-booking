@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Flights</title>
+    <style>
+        .flight-box {
+            border: 1px solid #000;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Search Flights</h1>
+    <form method="post" action="{% url 'search_flights' %}">
+        {% csrf_token %}
+        <label for="flight_id">Select Flight ID:</label>
+        <select name="flight_id" id="flight_id">
+            <option value=""></option>
+            {% for flight in flights %}
+            <option value="{{ flight.flight_number }}">{{ flight.flight_number }}</option>
+            {% endfor %}
+        </select><br><br>
+        <label for="from_time">From:</label>
+        <input type="time" id="from_time" name="from_time">
+        <label for="to_time">To:</label>
+        <input type="time" id="to_time" name="to_time"><br><br>
+        <input type="submit" value="Search">
+    </form>
+
+    {% if bookings %}
+    {% for booking in bookings %}
+
+    <h2>Bookings for Selected Flight</h2>
+    <div class="flight-box">
+        <h3>Flight Details</h3>
+        <p>Flight ID: {{ booking.flight.flight_number }}</p>
+        <p>Departure Time: {{ booking.flight.departure_time }}</p>
+    </div>
+
+    <div class="flight-box">
+        <h3>Booking ID: {{ booking.booking_id }}</h3>
+        <p>User: {{ booking.user }}</p>
+        <p>Booking Time: {{ booking.booking_time }}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+</body>
+
+</html>

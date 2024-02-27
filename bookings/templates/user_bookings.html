@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Bookings</title>
+</head>
+<body>
+    <h1>Your Bookings</h1>
+    <ul>
+        {% for booking in bookings %}
+            <li>Booking ID: {{ booking.booking_id }}</li>
+            <li>Flight ID: {{ booking.flight.flight_number }}</li>
+            <li>Departure Time: {{ booking.flight.departure_time }}</li>
+            <li>Booking Time: {{ booking.booking_time }}</li>
+            <!-- Add more booking details here -->
+            <hr>
+        {% endfor %}
+    </ul>
+</body>
+</html>
