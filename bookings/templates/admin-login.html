@@ -5,19 +5,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Admin-Login</title>
     <link rel="stylesheet" href="{% static 'login.css' %}">
 </head>
 
 <body>
     <div class="container">
-        {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
+
         <form method="POST" action="">
             {% csrf_token %}
             <label for="username">Username:</label>
@@ -30,7 +24,7 @@
         </form>
 
         <p>Haven't signed up yet? <a href="{% url 'register' %}">Sign up</a></p>
-        <p>Admin Login? <a href="{% url 'admin_login' %}">Admin-Login</a></p>
+        <p>User Login? <a href="{% url 'login' %}">Login</a></p>
     </div>
 </body>
 

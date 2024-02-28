@@ -33,6 +33,29 @@ def loginPage(request):
     context = {'page': page}
     return render(request, 'login.html', context)
     
+def admin_login(request):
+    page = 'admin-login'
+    if request.user.is_authenticated and request.user.user_type == 'admin':
+        return redirect('flights')
+        
+    if request.method == 'POST':
+        name = request.POST.get('name').lower()
+        password = request.POST.get('password')
+        
+        user = authenticate(request, username=name, password=password)
+        
+        if user is not None and user.user_type == 'admin':
+            login(request, user)
+            return redirect('flights')
+        elif user is not None and user.user_type == 'user':
+            messages.error(request, 'You are not an admin')
+            return redirect('login')
+        else:
+            messages.error(request, 'Username or password does not exist')
+        
+    context = {'page': page}
+    return render(request, 'admin-login.html', context)
+    
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def logoutUser(request):
     logout(request)
