@@ -1,22 +1,24 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="{%static 'signup.css' %}">
 </head>
+
 <body>
-    <div>
+    <div class="container">
         <form method="POST" action="">
             {% csrf_token %}
-            {{form.as_p}}
-            
-            
+            {{ form.as_p }}
+
             <input type="submit" value="Register">
         </form>
-        <p>Already signed in?</p>
-        <a href="{% url 'login' %}">Login</a>
+        <p>Already signed in? <a href="{% url 'login' %}">Login</a></p>
     </div>
-    
 </body>
+
 </html>

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,20 +6,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Bookings</title>
+    <link rel="stylesheet" href="{% static 'user_bookings.css'%}">
 </head>
 
 <body>
-    <h1>Your Bookings</h1>
-    <ul>
+    <div class="container">
+        <h1>Your Bookings</h1>
         {% for booking in bookings %}
-        <li>Booking ID: {{ booking.booking_id }}</li>
-        <li>Flight ID: {{ booking.flight.flight_number }}</li>
-        <li>Departure Time: {{ booking.flight.departure_time }}</li>
-        <li>Booking Time: {{ booking.booking_time }}</li>
-        <li>Seat Number: {{booking.seat_number}}</li>
-        <hr>
+        <div class="booking">
+            <div class="top-left">Flight ID: {{ booking.flight.flight_number }}</div>
+            <div class="top-right">Username: {{ booking.user.username }}</div>
+            <div class="booking-details">
+                <p>Departure Time: {{ booking.flight.departure_time }}</p>
+                <p>Booking Time: {{ booking.booking_time }}</p>
+                <p>Seat Number: {{ booking.seat_number }}</p>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
 </body>
 
 </html>
