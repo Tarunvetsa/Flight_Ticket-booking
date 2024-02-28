@@ -26,8 +26,6 @@ SECRET_KEY = "django-insecure-82jwl%f_=ip#l0m+whvmfe@c!@dxza+fjqdb!doi$9lnhqa^+0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -122,5 +120,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+
+ALLOWED_HOSTS = ['chatconnect-yz4t.onrender.com']
+
+CORS_ALLOW_ALL_ORIGINS=True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
