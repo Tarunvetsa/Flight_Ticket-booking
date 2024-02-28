@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import cache_control
 from django.db.models import Q
 from datetime import datetime
 from .models import Flight, User, Booking
@@ -32,8 +33,10 @@ def loginPage(request):
     context = {'page': page}
     return render(request, 'login.html', context)
     
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def logoutUser(request):
     logout(request)
+    request.session.clear()
     return redirect('login')
 
 def register(request):
@@ -60,8 +63,8 @@ def book_ticket(request, flight_number):
         flight.booked_seats += 1
         flight.seats_left-=1
         flight.save()
-        Booking.objects.create(user=request.user, flight=flight)
         booked_tickets = flight.booked_seats
+        Booking.objects.create(user=request.user, flight=flight, seat_number=booked_tickets)
         context={'flight_number': flight_number, 'booked_tickets': booked_tickets}
         return render(request, 'book_ticket.html', context)
     else:
@@ -69,9 +72,30 @@ def book_ticket(request, flight_number):
         
 @login_required(login_url='login')   
 def flights(request):
-    all_flights=Flight.objects.all()
-    context={'flights':all_flights}
-    return render(request, 'flights.html',context)
+    if request.method == 'POST':
+        from_date = request.POST.get('from_date')
+        to_date = request.POST.get('to_date')
+        from_time = request.POST.get('from_time')
+        to_time = request.POST.get('to_time')
+
+        # Filter flights based on the provided criteria
+        filtered_flights = Flight.objects.all()
+
+        if from_date:
+            filtered_flights = filtered_flights.filter(departure_date__gte=from_date)
+        if to_date:
+            filtered_flights = filtered_flights.filter(departure_date__lte=to_date)
+        if from_time:
+            filtered_flights = filtered_flights.filter(departure_time__gte=from_time)
+        if to_time:
+            filtered_flights = filtered_flights.filter(departure_time__lte=to_time)
+
+        context = {'flights': filtered_flights}
+        return render(request, 'flights.html', context)
+    else:
+        all_flights = Flight.objects.all()
+        context = {'flights': all_flights}
+        return render(request, 'flights.html', context)
     
 @login_required(login_url='login')
 def user_bookings(request):
@@ -110,23 +134,34 @@ def search_flights(request):
             to_time = datetime.strptime(to_time, '%H:%M').time()
 
         q_filters = Q()
-
+            
         if flight_id:
-            q_filters &= Q(flight_number=flight_id)
+            if flight_id != 'All':  
+                q_filters &= Q(flight_number=flight_id)
+            else:
+                flight_numbers = Flight.objects.values_list('flight_number', flat=True)
+                q_filters &= Q(flight_number__in=flight_numbers)
 
-        if from_time:
+        if from_time and to_time:
+            q_filters &= Q(departure_time__gte=from_time, departure_time__lte=to_time)
+        elif from_time:
             q_filters &= Q(departure_time__gte=from_time)
-        if to_time:
+        elif to_time:
             q_filters &= Q(departure_time__lte=to_time)
+        elif not from_time and not to_time:
+            from_time='00:00'
+            to_time='23:59'
+            q_filters &= Q(departure_time__gte=from_time, departure_time__lte=to_time)
             
         searched_flights = Flight.objects.filter(q_filters)
 
-        if flight_id:
+        if flight_id and flight_id != 'All':
             bookings = Booking.objects.filter(flight__flight_number=flight_id)
         else:
-            bookings = None
+            bookings = Booking.objects.filter(flight__departure_time__gte=from_time, flight__departure_time__lte=to_time)
 
-        context = {'searched_flights': searched_flights, 'bookings': bookings}
+        flights = Flight.objects.all() 
+        context = {'flights': flights, 'searched_flights': searched_flights, 'bookings': bookings, 'selected_flight_id': flight_id}
         return render(request, 'search_flights.html', context)
 
     flights = Flight.objects.all()

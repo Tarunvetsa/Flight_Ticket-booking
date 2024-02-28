@@ -17,6 +17,11 @@
             top: 10px;
             right: 10px;
         }
+
+        .filter-container {
+            text-align: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 
@@ -41,6 +46,25 @@
     <a href="{% url 'add_flight' %}"><button>Add Flights</button></a>
     {% endif %}
     {% endif %}
+
+    <!-- Filter Form -->
+    <div class="filter-container">
+        <form method="post" action="{% url 'flights' %}">
+            {% csrf_token %}
+            <label for="from_date">From Date:</label>
+            <input type="date" id="from_date" name="from_date">
+            <label for="to_date">To Date:</label>
+            <input type="date" id="to_date" name="to_date">
+            <br>
+            <label for="from_time">From Time:</label>
+            <input type="time" id="from_time" name="from_time">
+            <label for="to_time">To Time:</label>
+            <input type="time" id="to_time" name="to_time">
+            <br>
+            <input type="submit" value="Search">
+        </form>
+    </div>
+
     {% for flight in flights %}
     <div class="flight-box">
         {% if flight.seats_left > 0 %}
@@ -49,7 +73,6 @@
         <p>Departure Time: {{ flight.departure_time }}</p>
         <p>Seats Left: {{flight.seats_left}}</p>
 
-
         {% if user.is_authenticated %}
         {% if user.user_type == 'admin' %}
         <form method="post" action="{% url 'remove_flight' flight.flight_number %}">
@@ -57,7 +80,6 @@
             <button type="submit" class="remove-btn"
                 onclick="return confirm('Are you sure you want to delete this flight?')">Remove Flight</button>
         </form>
-
         {% endif %}
         {% endif %}
 
@@ -70,7 +92,6 @@
         </form>
         {% endif %}
         {% endif %}
-
         {% endif %}
     </div>
     {% endfor %}

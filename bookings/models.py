@@ -35,8 +35,9 @@ class Flight(models.Model):
 class Booking(models.Model):
     booking_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    flight = models.ForeignKey(Flight, on_delete=models.PROTECT)
+    flight = models.ForeignKey(Flight, on_delete=models.CASCADE)
     booking_time = models.DateTimeField(default=datetime.now)
+    seat_number = models.PositiveSmallIntegerField(default=1, choices=[(i, i) for i in range(1, 61)])
 
     def __str__(self):
         return str(self.booking_id)
