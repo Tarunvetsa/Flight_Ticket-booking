@@ -1,6 +1,6 @@
 <div align="center">
 
-# [Flight Ticket Booking App]([https://chatconnect-yz4t.onrender.com](https://book-flight-tickets.onrender.com))
+# [Flight Ticket Booking App](https://book-flight-tickets.onrender.com)
 </div>
 Flight Ticket Booking App is a web application designed for users to easily book flights and for administrators to manage flights and bookings.
 
